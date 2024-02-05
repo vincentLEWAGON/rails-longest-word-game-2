@@ -13,3 +13,38 @@
  *= require_tree .
  *= require_self
  */
+H1 {
+  color: rgb(115, 115, 230);
+}
+
+.center {
+  position: absolute; /* position par rapport au parent */
+  top: 50%; /* 50% du parent */
+  left: 50%; /* 50% du parent */
+  transform: translate(-50%, -50%); /* décalage de 50% de sa propre taille */
+  text-align: center;
+}
+
+.flex-div {
+  display: flex;
+}
+
+.card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgb(115, 115, 230);
+  border-radius: 8px;
+  width: 50px;
+  height: 50px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  padding: 0px;
+  margin: 20px;
+}
+
+.card p {
+  color: white;
+  font-size: 20px;
+  font-weight: bold;
+  text-decoration: none;
+}

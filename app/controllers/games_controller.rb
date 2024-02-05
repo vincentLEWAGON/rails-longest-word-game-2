@@ -1,45 +1,34 @@
-require 'net/http'
-require 'json'
+require "open-uri"
 
 class GamesController < ApplicationController
+  VOWELS = %w(A E I O U Y) # un tableau constant de voyelles
 
   def new
-    # je créee un tableau de voyels et un tableau de consonnes
-    @voyels = ["A", "E", "I", "O", "U", "Y"]
-    @consonnes = ("A".."Z").to_a - @voyels
-    # je créee un tableau de 10 lettres comprenant 6 consonnes et 4 voyels
-    @letters = []
-    6.times { @letters << @consonnes.to_a.sample }
-    4.times { @letters << @voyels.to_a.sample }
-    # j'enregistre les lettres dans une session pour pouvoir les utiliser dans la méthode score
-    session[:letters] = @letters
+    @letters = Array.new(4) { VOWELS.sample } # un tableau de 4 voyelles au hasard
+    @letters += Array.new(6) { (('A'..'Z').to_a - VOWELS).sample } # un tableau de 6 consonnes au hasard
+    @letters.shuffle! # mélanger les lettres
   end
 
   def score
-    # je récupère le mot écrit par l'utilisateur
-    @your_word = params[:word]
-    # je récupère les lettres tirées
-    @letters = session[:letters]
-    # je récupère le score
-    @score = @your_word.length
+    @letters = params[:letters] # récupérer les lettres du formulaire sous forme de chaine !
+    @word = (params[:word] || '').upcase # récupérer le mot du formulaire
+    @included = included?(@word, @letters) # appelle la méthode included? pour vérifier si le mot est inclus dans les lettres
+    @english_word = english_word?(@word) # appelle la méthode english_word? pour vérifier si le mot est un mot anglais
+  end
 
-    # vérifie si le mot contient des lettres qui sont  dans les lettres tirées
-    if @your_word.upcase.chars.all? { |letter| @your_word.upcase.count(letter) <= @letters.count(letter) }
-      # j'enreggistre l'URL de l'API dans une variable
-      url = URI("https://wagon-dictionary.herokuapp.com/#{@your_word}")
-      # je récupère le résultat de l'API
-      @result = JSON.parse(Net::HTTP.get(url))
-      # je vérifie si le mot est valide
-      if @result["found"]
-        # si le mot est valide, j'indique le score
-        @result = "Félicitations! #{@your_word} est un mot anglais valide. votre score est de #{@score}"
-      else
-        # si le mot n'est pas valide, j'indique que le mot n'est pas valide
-        @result = "Désolé, mais #{@your_word} n'est pas un mot anglais valide"
-      end
-    else
-      # si le mot ne peut pas être construit à partir des lettres tirées, j'indique que le mot ne peut pas être construit
-      @result = "Désolé, mais #{@your_word} ne peut pas être construit à partir de #{@letters}"
-    end
+  private
+  def included?(word, letters) # méthode pour vérifier si le mot est inclus dans les lettres
+    letters_array = letters.chars # transformer la chaine de caractère en tableau de lettres
+    # vérifier si chaque lettre du mot est incluse dans les lettres
+    word.chars.all? { |letter| word.count(letter) <= letters_array.count(letter) }
+  end
+
+  def english_word?(word)
+    # appeler l'API pour vérifier si le mot est un mot anglais
+    response = URI.open("https://wagon-dictionary.herokuapp.com/#{word}")
+    # transformer la réponse en JSON
+    json = JSON.parse(response.read)
+    # retourner la valeur de la clé "found" du JSON
+    json['found']
   end
 end

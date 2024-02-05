@@ -1,4 +1,14 @@
-<h1><%= @your_word %></h1>
-<h1><%= @result %></h1>
+<h1>Resultat</h1>
 
-<%=link_to "nouvel essai", new_game_path %>
+<% if @included %>
+  <% if @english_word %>  <!-- je teste la condition-->
+    <p><strong>Bravo!</strong> <%= @word %> est un mot valide!</p>
+    <%= "votre score est de #{@word.length}" %>
+  <% else %>
+    <p>Désolé mais <strong><%= @word %></strong> n'est pas un mot valide...</p>
+  <% end %>
+<% else %>
+  <p>Désolé <strong><%= @word %></strong> ne peut être construit à partir du tirage <%= @letters %></p>
+<% end %>
+
+<%= link_to "Nouvel essai", new_game_path %>
