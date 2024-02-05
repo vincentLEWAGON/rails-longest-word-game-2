@@ -3,12 +3,18 @@
 <% if @included %>
   <% if @english_word %>  <!-- je teste la condition-->
     <p><strong>Bravo!</strong> <%= @word %> est un mot valide!</p>
-    <%= "votre score est de #{@word.length}" %>
+    <%= "vous avez marqué #{@word.length} points"%>
+    <p>Nombre de parties jouées : <%= session[:games_played] %></p> <!-- je récupère la valeur de la session-->
+    <p>Score total : <%= session[:total_score] %></p> <!-- je récupère la valeur de la session-->
   <% else %>
     <p>Désolé mais <strong><%= @word %></strong> n'est pas un mot valide...</p>
+    <p>Nombre de parties jouées : <%= session[:games_played] %></p> <!-- je récupère la valeur de la session-->
+    <p>Score total : <%= session[:total_score] %></p> <!-- je récupère la valeur de la session-->
   <% end %>
 <% else %>
   <p>Désolé <strong><%= @word %></strong> ne peut être construit à partir du tirage <%= @letters %></p>
+  <p>Nombre de parties jouées : <%= session[:games_played] %></p> <!-- je récupère la valeur de la session-->
+  <p>Score total : <%= session[:total_score] %></p> <!-- je récupère la valeur de la session-->
 <% end %>
 
 <%= link_to "Nouvel essai", new_game_path %>

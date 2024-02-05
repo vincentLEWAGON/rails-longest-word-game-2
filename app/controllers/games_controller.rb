@@ -13,7 +13,15 @@ class GamesController < ApplicationController
     @letters = params[:letters] # récupérer les lettres du formulaire sous forme de chaine !
     @word = (params[:word] || '').upcase # récupérer le mot du formulaire
     @included = included?(@word, @letters) # appelle la méthode included? pour vérifier si le mot est inclus dans les lettres
-    @english_word = english_word?(@word) # appelle la méthode english_word? pour vérifier si le mot est un mot anglais
+    # appelle la méthode english_word? pour vérifier si le mot est un mot anglais
+    @english_word = english_word?(@word)
+
+    session[:games_played] = session[:games_played].to_i + 1
+
+    if @included && @english_word
+      @score = @word.length
+      session[:total_score] = session[:total_score].to_i + @score
+    end
   end
 
   private

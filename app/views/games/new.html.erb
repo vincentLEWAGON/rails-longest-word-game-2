@@ -1,12 +1,14 @@
 <div class="flex-div">
-<!-- j'affiche les lettres du tirage séparées par un espace -->
-  <% @letters.each do |letter| %>
-<div class = "card">
-  <p><%= letter %></p>
+  <ul style="list-style-type: none; display: flex;">
+    <% @letters.each do |letter| %>
+      <li>
+        <div class="card">
+          <p><%= letter %></p>
+        </div>
+      </li>
+    <% end %>
+  </ul>
 </div>
-  <% end %>
-</div>
-
 <div>
 <!-- j'affiche un formulaire de reponse -->
   <form action="score" method="post" data-turbo="false">
